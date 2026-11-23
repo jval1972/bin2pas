@@ -1,9 +1,9 @@
 object Form1: TForm1
-  Left = 205
-  Top = 138
+  Left = 204
+  Top = 122
   Width = 1044
   Height = 540
-  Caption = 'Form1'
+  Caption = 'Binary to Pascal'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -1042,7 +1042,132 @@ object Form1: TForm1
     0000000000000000000000000000000000000000000000000000000000000000
     0000000000000000000000000000000000000000000000000000000000000000
     00000000000000000000000000000000000000000000000000000000}
+  Menu = MainMenu1
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
+  object ToolbarPanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 1028
+    Height = 56
+    Align = alTop
+    Caption = ' '
+    TabOrder = 0
+  end
+  object BackPanel: TPanel
+    Left = 0
+    Top = 56
+    Width = 1028
+    Height = 425
+    Align = alClient
+    BevelOuter = bvNone
+    Caption = ' '
+    TabOrder = 1
+    object LeftPanel: TPanel
+      Left = 0
+      Top = 0
+      Width = 185
+      Height = 425
+      Align = alLeft
+      BorderWidth = 4
+      Caption = ' '
+      TabOrder = 0
+      object Panel1: TPanel
+        Left = 5
+        Top = 5
+        Width = 175
+        Height = 32
+        Align = alTop
+        Caption = 'Binary Files'
+        TabOrder = 0
+      end
+      object ListBox1: TListBox
+        Left = 5
+        Top = 37
+        Width = 175
+        Height = 383
+        Align = alClient
+        Font.Charset = ANSI_CHARSET
+        Font.Color = clBlack
+        Font.Height = -13
+        Font.Name = 'Courier New'
+        Font.Style = []
+        ItemHeight = 16
+        ParentFont = False
+        TabOrder = 1
+        OnClick = ListBox1Click
+      end
+    end
+    object PreviewPanel: TPanel
+      Left = 185
+      Top = 0
+      Width = 843
+      Height = 425
+      Align = alClient
+      BorderWidth = 4
+      Caption = ' '
+      TabOrder = 1
+      object Panel2: TPanel
+        Left = 5
+        Top = 5
+        Width = 833
+        Height = 32
+        Align = alTop
+        Caption = 'Preview'
+        TabOrder = 0
+      end
+      object EditorPanel: TPanel
+        Left = 5
+        Top = 37
+        Width = 833
+        Height = 383
+        Align = alClient
+        Caption = ' '
+        TabOrder = 1
+      end
+    end
+  end
+  object MainMenu1: TMainMenu
+    Left = 336
+    Top = 200
+    object File1: TMenuItem
+      Caption = 'File'
+      object Open1: TMenuItem
+        Caption = 'Open'
+        OnClick = Open1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object SaveAs1: TMenuItem
+        Caption = 'Save As'
+      end
+      object SaveAll1: TMenuItem
+        Caption = 'Save All'
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Exit1: TMenuItem
+        Caption = 'Exit'
+      end
+    end
+    object Help1: TMenuItem
+      Caption = 'Help'
+      object About1: TMenuItem
+        Caption = 'About'
+      end
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Filter = 
+      'DLL Files (*.dll)|*.dll|EXE Files (*.exe)|*.exe|All Files (*.*)|' +
+      '*.*'
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    Left = 254
+    Top = 125
+  end
 end
