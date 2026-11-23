@@ -13,9 +13,36 @@ function b2p_create_unit(const finp: string; const fout: string = ''): Boolean;
 
 implementation
 
+function b2p_byte2hex(const b: Byte): string;
+begin
+  Result := '$' + IntToHex(b, 2);
+end;
+
 function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name: string): string;
 var
   i: Integer;
+  size, realsize: Integer;
+  ret: string;
+
+  procedure _add(const s: string);
+  var
+    len: Integer;
+    ii: Integer;
+  begin
+    len := Length(s);
+    if size + len >= realsize then
+    begin
+      realsize := ((realsize * 5 div 4) + len + 257) and not $FF;
+      SetLength(ret, realsize);
+    end;
+
+    for ii := 1 to len do
+    begin
+      Inc(size);
+      ret[size] := s[ii];
+    end;
+  end;
+
 begin
   if sz = 0 then
   begin
@@ -32,7 +59,7 @@ begin
                   [UpperCase(name)]);
     Result := Result +
                 Format('  %s: array[0..0] of Byte = ( %s );'#13#10,
-                  [name, IntToHex(buf[0], 2)]);
+                  [name, b2p_byte2hex(buf[0])]);
     Exit;
   end;
 
@@ -42,7 +69,7 @@ begin
                 Format('  %s_SIZE = 2;'#13#10, [UpperCase(name)]);
     Result := Result +
                 Format('  %s: array[0..1] of Byte = ( %s, %s );'#13#10,
-                  [name, IntToHex(buf[0], 2), IntToHex(buf[1], 2)]);
+                  [name, b2p_byte2hex(buf[0]), b2p_byte2hex(buf[1])]);
     Exit;
   end;
 
@@ -51,8 +78,8 @@ begin
     Result := Result +
                 Format('  %s_SIZE = 3;'#13#10, [UpperCase(name)]);
     Result := Result +
-                Format('  %s: array[0..2] of Byte = ( %s, %s );'#13#10,
-                  [name, IntToHex(buf[0], 2), IntToHex(buf[1], 2), IntToHex(buf[2], 2)]);
+                Format('  %s: array[0..2] of Byte = ( %s, %s, %s );'#13#10,
+                  [name, b2p_byte2hex(buf[0]), b2p_byte2hex(buf[1]), b2p_byte2hex(buf[2])]);
     Exit;
   end;
 
@@ -62,33 +89,42 @@ begin
   Result := Result +
               Format('  %s: array[0..%s_SIZE - 1] of Byte = ('#13#10'    ',
                 [name, UpperCase(name)]);
+
+  ret := '          ';
+  realsize := Length(ret);
+  size := 0;
+
   for i := 0 to sz - 1 do
   begin
-    Result := Result + IntToHex(buf[i], 2);
+    _add(b2p_byte2hex(buf[i]));
 
     if i < sz - 1 then
-      Result := Result + ', '
+      _add(', ')
     else
     begin
-      Result := Result + #13#10'  );'#13#10#13#10;
+      _add(#13#10'  );'#13#10#13#10);
       Break;
     end;
 
     if (i + 1) mod 16 = 0 then
     begin
-      SetLength(Result, Length(Result) -1); // Remove last space
-      Result := Result + #13#10'    ';
+      Dec(size); // Remove last space
+      _add(#13#10'    ');
     end;
   end;
+
+  SetLength(ret, size);
+
+  Result := Result + ret;
 end;
 
 function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varname, unitname: string): string;
 begin
-  Result := 'unit ' + unitname + #13#10#13#10;
+  Result := 'unit ' + unitname + ';'#13#10#13#10;
   Result := Result + 'interface'#13#10#13#10;
   Result := Result + b2p_data_to_decl(buf, sz, varname);
   Result := Result + 'implementation'#13#10#13#10;
-  Result := Result + 'end.#13#10';
+  Result := Result + 'end.'#13#10;
 end;
 
 function b2p_create_unit(const finp: string; const fout: string = ''): Boolean;
