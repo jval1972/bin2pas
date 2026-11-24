@@ -180,7 +180,7 @@ begin
 
   ListBox1.ItemIndex := id;
 
-  srcfilename := ChangeFileExt(Files.Strings[id], '.pas');
+  srcfilename := IncludeTrailingPathDelimiter(ExtractFilePath(Files.Strings[id])) + b2p_pascalname(ChangeFileExt(ListBox1.Items.Strings[id], '.pas'));
   if not FileExists(srcfilename) then
   begin
     SynEdit1.Text := 'File "' + srcfilename + '" not found!';

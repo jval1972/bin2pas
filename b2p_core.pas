@@ -5,17 +5,19 @@ interface
 uses
   SysUtils, Classes;
 
-function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name: string): string;
+function b2p_pascalname(const s: string): string;
 
-function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varname, unitname: string): string;
+function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name1: string): string;
+
+function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varname1, unitname1: string): string;
 
 function b2p_create_unit(const finp: string; const fout: string = ''): Boolean;
 
 implementation
 
 const
-  ABC_CHARS = set of Char = ['A'..'Z','a'..'z'];
-  NUM_CHARS = set of Char = ['1'..'9','0'];
+  ABC_CHARS: set of Char = ['A'..'Z','a'..'z'];
+  NUM_CHARS: set of Char = ['1'..'9','0'];
 
 function b2p_pascalname(const s: string): string;
 var
@@ -25,14 +27,14 @@ begin
   if s = '' then
     Exit;
 
-  if s[1] in ABC_CHARS then
+  if (s[1] in ABC_CHARS) or (s[1] = '_') then
     Result := s[1]
   else
     Result := '_' + IntToHex(Ord(s[1]), 2) + '_';
 
   for i := 2 to Length(s) do
   begin
-    if (s[i] in ABC_CHARS) or (s[i] in NUM_CHARS) then
+    if (s[i] in ABC_CHARS) or (s[i] in NUM_CHARS) or (s[i] in ['.', '_']) then
       Result := Result + s[i]
     else if s[i] = '-' then
       Result := Result + '_'
@@ -48,10 +50,11 @@ begin
   Result := '$' + IntToHex(b, 2);
 end;
 
-function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name: string): string;
+function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name1: string): string;
 var
   i: Integer;
   size, realsize: Integer;
+  name: string;
   ret: string;
 
   procedure _add(const s: string);
@@ -80,6 +83,8 @@ begin
     Exit;
   end;
 
+  name := b2p_pascalname(name1);
+  
   Result := 'const'#13#10;
 
   if sz = 1 then
@@ -148,8 +153,15 @@ begin
   Result := Result + ret;
 end;
 
-function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varname, unitname: string): string;
+function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varname1, unitname1: string): string;
+var
+  varname, unitname: string;
 begin
+  varname := b2p_pascalname(varname1);
+  unitname := b2p_pascalname(unitname1);
+  if varname = unitname then
+    varname := '_' + varname;
+
   Result := 'unit ' + unitname + ';'#13#10#13#10;
   Result := Result + 'interface'#13#10#13#10;
   Result := Result + b2p_data_to_decl(buf, sz, varname);
@@ -184,12 +196,13 @@ begin
   if unitname = '' then
     unitname := varname;
 
+  unitname := b2p_pascalname(unitname);
+  varname := b2p_pascalname(varname);
+  
   if unitname = varname then
     varname := '_' + varname;
 
-  outname := fout;
-  if fout = '' then
-    outname := IncludeTrailingPathDelimiter(ExtractFilePath(finp)) + unitname + '.pas';
+  outname := IncludeTrailingPathDelimiter(ExtractFilePath(finp)) + unitname + '.pas';
 
   fs := TFileStream.Create(finp, fmOpenRead);
   try
