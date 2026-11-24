@@ -1153,6 +1153,7 @@ object Form1: TForm1
       end
       object Exit1: TMenuItem
         Caption = 'Exit'
+        OnClick = Exit1Click
       end
     end
     object Help1: TMenuItem

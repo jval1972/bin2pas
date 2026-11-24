@@ -42,6 +42,7 @@ type
     procedure Open1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
+    procedure Exit1Click(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -218,6 +219,11 @@ end;
 procedure TForm1.ListBox1Click(Sender: TObject);
 begin
     DoChangeFile(ListBox1.ItemIndex);
+end;
+
+procedure TForm1.Exit1Click(Sender: TObject);
+begin
+  Close;
 end;
 
 end.
