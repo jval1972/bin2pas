@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, Menus, StdCtrls, SynEdit, SynHighlighterPas;
+  Dialogs, ExtCtrls, Menus, StdCtrls, SynEdit, SynHighlighterPas, Buttons;
 
 type
   TPascalSynEdit = class(TSynEdit)
@@ -29,7 +29,7 @@ type
     Exit1: TMenuItem;
     SaveAs1: TMenuItem;
     N2: TMenuItem;
-    SaveAll1: TMenuItem;
+    Clear1: TMenuItem;
     Panel1: TPanel;
     ListBox1: TListBox;
     PreviewPanel: TPanel;
@@ -38,18 +38,28 @@ type
     About1: TMenuItem;
     EditorPanel: TPanel;
     OpenDialog1: TOpenDialog;
+    ClearButton1: TSpeedButton;
+    OpenButton1: TSpeedButton;
+    SaveAsButton1: TSpeedButton;
+    AboutButton1: TSpeedButton;
+    ExitButton1: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure Open1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
+    procedure OpenButton1Click(Sender: TObject);
+    procedure AboutButton1Click(Sender: TObject);
+    procedure ExitButton1Click(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
     SynEdit1: TPascalSynEdit;
     Files: TStringList;
+    procedure DoAbout;
     procedure DoOpen;
+    procedure DoClose;
     procedure DoChangeFile(const id: Integer);
   public
     { Public declarations }
@@ -139,6 +149,15 @@ begin
   Files.Free;
 end;
 
+procedure TForm1.DoAbout;
+begin
+  FRMMessage(
+    Format(
+      '%s'#13#10'Version ' + I_VersionBuilt +
+      #13#10#13#10'A tool for converting binary files to Pascal code.'#13#10'© 2026, jvalavanis@gmail.com',
+      [rsTitle]));
+end;
+
 procedure TForm1.DoOpen;
 var
   i: Integer;
@@ -167,6 +186,11 @@ begin
 
     DoChangeFile(0);
   end;
+end;
+
+procedure TForm1.DoClose;
+begin
+  Close;
 end;
 
 procedure TForm1.DoChangeFile(const id: Integer);
@@ -227,16 +251,27 @@ end;
 
 procedure TForm1.Exit1Click(Sender: TObject);
 begin
-  Close;
+  DoClose;
 end;
 
 procedure TForm1.About1Click(Sender: TObject);
 begin
-  FRMMessage(
-    Format(
-      '%s'#13#10'Version ' + I_VersionBuilt +
-      #13#10#13#10'A tool for converting binary files to Pascal code.'#13#10'© 2026, jvalavanis@gmail.com',
-      [rsTitle]));
+  DoAbout;
+end;
+
+procedure TForm1.OpenButton1Click(Sender: TObject);
+begin
+  DoOpen;
+end;
+
+procedure TForm1.AboutButton1Click(Sender: TObject);
+begin
+  DoAbout;
+end;
+
+procedure TForm1.ExitButton1Click(Sender: TObject);
+begin
+  DoClose;
 end;
 
 end.
