@@ -166,7 +166,7 @@ end;
 
 procedure TForm1.DoChangeFile(const id: Integer);
 const
-  MAXLINES = 30000;
+  MAXLINES = 100000;
 var
   lst: TStringList;
   cnt: Integer;
