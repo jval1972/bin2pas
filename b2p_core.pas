@@ -13,6 +13,36 @@ function b2p_create_unit(const finp: string; const fout: string = ''): Boolean;
 
 implementation
 
+const
+  ABC_CHARS = set of Char = ['A'..'Z','a'..'z'];
+  NUM_CHARS = set of Char = ['1'..'9','0'];
+
+function b2p_pascalname(const s: string): string;
+var
+  i: Integer;
+begin
+  Result := '';
+  if s = '' then
+    Exit;
+
+  if s[1] in ABC_CHARS then
+    Result := s[1]
+  else
+    Result := '_' + IntToHex(Ord(s[1]), 2) + '_';
+
+  for i := 2 to Length(s) do
+  begin
+    if (s[i] in ABC_CHARS) or (s[i] in NUM_CHARS) then
+      Result := Result + s[i]
+    else if s[i] = '-' then
+      Result := Result + '_'
+    else
+      Result := Result + '_' + IntToHex(Ord(s[i]), 2) + '_';
+  end;
+
+  Result := StringReplace(Result, '__', '_', [rfReplaceAll, rfIgnoreCase]);
+end;
+
 function b2p_byte2hex(const b: Byte): string;
 begin
   Result := '$' + IntToHex(b, 2);
