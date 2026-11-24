@@ -31,7 +31,9 @@ uses
   SynHighlighterPas in 'SynEdit\SynHighlighterPas.pas',
   SynRegExpr in 'SynEdit\SynRegExpr.pas',
   SynTextDrawer in 'SynEdit\SynTextDrawer.pas',
-  SynUnicode in 'SynEdit\SynUnicode.pas';
+  SynUnicode in 'SynEdit\SynUnicode.pas',
+  frm_message in 'frm_message.pas' {frmMessage},
+  b2p_utils in 'b2p_utils.pas';
 
 {$R *.res}
 

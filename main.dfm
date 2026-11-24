@@ -1160,6 +1160,7 @@ object Form1: TForm1
       Caption = 'Help'
       object About1: TMenuItem
         Caption = 'About'
+        OnClick = About1Click
       end
     end
   end

@@ -43,6 +43,7 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
+    procedure About1Click(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -62,8 +63,11 @@ implementation
 {$R *.dfm}
 
 uses
-  b2p_core;
+  b2p_core, b2p_utils, frm_message;
 
+const
+  rsTitle = 'Binary to Pascal';
+    
 function TPascalSynEdit.GetSaveFileName(const fn: string): string;
 begin
   Result := fn + '.pas';
@@ -224,6 +228,15 @@ end;
 procedure TForm1.Exit1Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TForm1.About1Click(Sender: TObject);
+begin
+  FRMMessage(
+    Format(
+      '%s'#13#10'Version ' + I_VersionBuilt +
+      #13#10#13#10'A tool for converting binary files to Pascal code.'#13#10'© 2026, jvalavanis@gmail.com',
+      [rsTitle]));
 end;
 
 end.
