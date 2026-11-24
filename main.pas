@@ -57,9 +57,9 @@ type
     SynPasSyn1: TSynPasSyn;
     SynEdit1: TPascalSynEdit;
     Files: TStringList;
-    procedure DoAbout;
-    procedure DoOpen;
-    procedure DoClose;
+    procedure ActionAbout;
+    procedure ActionOpen;
+    procedure ActionClose;
     procedure DoChangeFile(const id: Integer);
   public
     { Public declarations }
@@ -149,7 +149,7 @@ begin
   Files.Free;
 end;
 
-procedure TForm1.DoAbout;
+procedure TForm1.ActionAbout;
 begin
   FRMMessage(
     Format(
@@ -158,7 +158,7 @@ begin
       [rsTitle]));
 end;
 
-procedure TForm1.DoOpen;
+procedure TForm1.ActionOpen;
 var
   i: Integer;
 begin
@@ -188,7 +188,7 @@ begin
   end;
 end;
 
-procedure TForm1.DoClose;
+procedure TForm1.ActionClose;
 begin
   Close;
 end;
@@ -241,7 +241,7 @@ end;
 
 procedure TForm1.Open1Click(Sender: TObject);
 begin
-  DoOpen;
+  ActionOpen;
 end;
 
 procedure TForm1.ListBox1Click(Sender: TObject);
@@ -251,27 +251,27 @@ end;
 
 procedure TForm1.Exit1Click(Sender: TObject);
 begin
-  DoClose;
+  ActionClose;
 end;
 
 procedure TForm1.About1Click(Sender: TObject);
 begin
-  DoAbout;
+  ActionAbout;
 end;
 
 procedure TForm1.OpenButton1Click(Sender: TObject);
 begin
-  DoOpen;
+  ActionOpen;
 end;
 
 procedure TForm1.AboutButton1Click(Sender: TObject);
 begin
-  DoAbout;
+  ActionAbout;
 end;
 
 procedure TForm1.ExitButton1Click(Sender: TObject);
 begin
-  DoClose;
+  ActionClose;
 end;
 
 end.
