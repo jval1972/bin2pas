@@ -110,19 +110,29 @@ ActiveLang=
 ProjectLang=
 RootDir=C:\Program Files (x86)\Borland\Delphi7\Bin\
 [Version Info]
-IncludeVerInfo=0
-AutoIncBuild=0
+IncludeVerInfo=1
+AutoIncBuild=1
 MajorVer=1
 MinorVer=0
-Release=0
-Build=0
+Release=1
+Build=2
 Debug=0
 PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1032
-CodePage=1253
+Locale=1033
+CodePage=1252
+[Version Info Keys]
+CompanyName=Jim Valavanis
+FileDescription=Binary to Pascal
+FileVersion=1.0.1.2
+InternalName=Bin2Pas
+LegalCopyright=Copyright (c) 2026, Jim Valavanis
+LegalTrademarks=Copyright (c) 2026, Jim Valavanis
+OriginalFilename=Bin2Pas.exe
+ProductName=Bin2Pas
+ProductVersion=1.0.0.0
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
