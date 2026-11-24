@@ -173,7 +173,7 @@ begin
 
       for i := 0 to OpenDialog1.Files.Count - 1 do
       begin
-        b2p_create_unit(OpenDialog1.Files.Strings[i]);
+        b2p_create_unit(OpenDialog1.Files.Strings[i], '', B2PF_ZIP);
         Files.Add(OpenDialog1.Files.Strings[i]);
       end;
 

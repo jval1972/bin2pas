@@ -3,9 +3,13 @@ unit b2p_utils;
 interface
 
 uses
-  Windows, SysUtils, Classes;
+  Windows, SysUtils, Classes, zlib;
 
 procedure memcpy(const dest0: pointer; const src0: pointer; count0: integer);
+
+procedure CompressStream(Source, Dest: TStream; Level: TCompressionLevel = clDefault);
+
+procedure DecompressStream(Source, Dest: TStream);
 
 function I_VersionBuilt(fname: string = ''): string;
 
@@ -31,6 +35,31 @@ implementation
 procedure memcpy(const dest0: pointer; const src0: pointer; count0: integer);
 begin
   Move(src0^, dest0^, count0);
+end;
+
+procedure CompressStream(Source, Dest: TStream; Level: TCompressionLevel = clDefault);
+var
+  Compressor: TCompressionStream;
+begin
+  Compressor := TCompressionStream.Create(Level, Dest);
+  try
+    Compressor.CopyFrom(Source, 0);
+  finally
+    // Flushes remaining compressed bytes to Dest; does not free Dest
+    Compressor.Free;
+  end;
+end;
+
+procedure DecompressStream(Source, Dest: TStream);
+var
+  Decompressor: TDecompressionStream;
+begin
+  Decompressor := TDecompressionStream.Create(Source);
+  try
+    Dest.CopyFrom(Decompressor, 0);
+  finally
+    Decompressor.Free;
+  end;
 end;
 
 function I_VersionBuilt(fname: string = ''): string;
