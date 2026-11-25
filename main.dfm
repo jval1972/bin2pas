@@ -1603,9 +1603,11 @@ object Form1: TForm1
     object CompressionCheckBox1: TCheckBox
       Left = 344
       Top = 8
-      Width = 97
+      Width = 121
       Height = 17
-      Caption = 'Compression'
+      Caption = 'Compress file data'
+      Checked = True
+      State = cbChecked
       TabOrder = 0
     end
   end
