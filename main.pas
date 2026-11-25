@@ -61,6 +61,7 @@ type
     procedure SaveAs1Click(Sender: TObject);
     procedure File1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
+    procedure CompressionCheckBox1Click(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -72,6 +73,7 @@ type
     procedure ActionClear;
     procedure ActionSaveAs;
     procedure ActionUpdateControls;
+    procedure ActionBuildFiles;
     procedure ActionChangeFile(const id: Integer);
   public
     { Public declarations }
@@ -173,7 +175,6 @@ end;
 procedure TForm1.ActionOpen;
 var
   i: Integer;
-  flags: LongWord;
 begin
   if OpenDialog1.Execute then
   begin
@@ -181,17 +182,13 @@ begin
 
     try
       Files.Clear;
+      for i := 0 to OpenDialog1.Files.Count - 1 do
+        Files.Add(OpenDialog1.Files.Strings[i]);
+
       SynEdit1.Clear;
       ListBox1.Clear;
 
-      for i := 0 to OpenDialog1.Files.Count - 1 do
-      begin
-        flags := 0;
-        if CompressionCheckBox1.Checked then
-          flags := flags or B2PF_ZIP;
-        b2p_create_unit(OpenDialog1.Files.Strings[i], '', flags);
-        Files.Add(OpenDialog1.Files.Strings[i]);
-      end;
+      ActionBuildFiles;
 
       for i := 0 to Files.Count - 1 do
         ListBox1.Items.Add(ExtractFileName(Files.Strings[i]));
@@ -273,6 +270,19 @@ procedure TForm1.ActionUpdateControls;
 begin
   SaveAs1.Enabled := SynEdit1.Lines.Count > 0;
   SaveAsButton1.Enabled := SynEdit1.Lines.Count > 0;
+end;
+
+procedure TForm1.ActionBuildFiles;
+var
+  i: Integer;
+  flags: LongWord;
+begin
+  flags := 0;
+  if CompressionCheckBox1.Checked then
+    flags := flags or B2PF_ZIP;
+
+  for i := 0 to Files.Count - 1 do
+    b2p_create_unit(Files.Strings[i], '', flags);
 end;
 
 procedure TForm1.ActionChangeFile(const id: Integer);
@@ -384,6 +394,18 @@ end;
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
   ActionUpdateControls;
+end;
+
+procedure TForm1.CompressionCheckBox1Click(Sender: TObject);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    ActionBuildFiles;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+
+  ActionChangeFile(ListBox1.ItemIndex);
 end;
 
 end.

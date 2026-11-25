@@ -1611,6 +1611,7 @@ object Form1: TForm1
       Checked = True
       State = cbChecked
       TabOrder = 0
+      OnClick = CompressionCheckBox1Click
     end
   end
   object BackPanel: TPanel
