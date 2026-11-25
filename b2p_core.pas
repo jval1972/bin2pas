@@ -16,14 +16,14 @@ function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varnam
 
 function b2p_create_unit(const finp: string; const fout: string = ''; const flags: LongWord = 0): Boolean;
 
+const
+  ABC_CHARS: set of Char = ['A'..'Z','a'..'z'];
+  NUM_CHARS: set of Char = ['1'..'9','0'];
+
 implementation
 
 uses
   b2p_utils;
-
-const
-  ABC_CHARS: set of Char = ['A'..'Z','a'..'z'];
-  NUM_CHARS: set of Char = ['1'..'9','0'];
 
 function b2p_pascalname(const s: string): string;
 var

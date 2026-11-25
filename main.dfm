@@ -1280,6 +1280,7 @@ object Form1: TForm1
       Width = 64
       Height = 64
       Caption = 'Save As'
+      Enabled = False
       Flat = True
       Glyph.Data = {
         360C0000424D360C000000000000360000002800000020000000200000000100
@@ -1381,6 +1382,7 @@ object Form1: TForm1
         FCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFC
         FCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFC}
       Layout = blGlyphTop
+      OnClick = SaveAsButton1Click
     end
     object AboutButton1: TSpeedButton
       Left = 200
@@ -1689,6 +1691,7 @@ object Form1: TForm1
     Top = 200
     object File1: TMenuItem
       Caption = 'File'
+      OnClick = File1Click
       object Clear1: TMenuItem
         Caption = 'Clear'
         OnClick = Clear1Click
@@ -1702,6 +1705,7 @@ object Form1: TForm1
       end
       object SaveAs1: TMenuItem
         Caption = 'Save As'
+        OnClick = SaveAs1Click
       end
       object N2: TMenuItem
         Caption = '-'
@@ -1726,5 +1730,18 @@ object Form1: TForm1
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 254
     Top = 125
+  end
+  object SaveDialog1: TSaveDialog
+    DefaultExt = 'pas'
+    Filter = 'Pascal Unit (*.pas)|*.pas|All Files (*.*)|*.*'
+    Options = [ofOverwritePrompt, ofHideReadOnly, ofPathMustExist, ofEnableSizing]
+    Left = 326
+    Top = 125
+  end
+  object Timer1: TTimer
+    Interval = 200
+    OnTimer = Timer1Timer
+    Left = 414
+    Top = 133
   end
 end

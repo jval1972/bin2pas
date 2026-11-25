@@ -37,13 +37,15 @@ type
     Help1: TMenuItem;
     About1: TMenuItem;
     EditorPanel: TPanel;
-    OpenDialog1: TOpenDialog;
     ClearButton1: TSpeedButton;
     OpenButton1: TSpeedButton;
     SaveAsButton1: TSpeedButton;
     AboutButton1: TSpeedButton;
     ExitButton1: TSpeedButton;
     CompressionCheckBox1: TCheckBox;
+    OpenDialog1: TOpenDialog;
+    SaveDialog1: TSaveDialog;
+    Timer1: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure Open1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -55,6 +57,10 @@ type
     procedure ExitButton1Click(Sender: TObject);
     procedure Clear1Click(Sender: TObject);
     procedure ClearButton1Click(Sender: TObject);
+    procedure SaveAsButton1Click(Sender: TObject);
+    procedure SaveAs1Click(Sender: TObject);
+    procedure File1Click(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -64,6 +70,8 @@ type
     procedure ActionOpen;
     procedure ActionClose;
     procedure ActionClear;
+    procedure ActionSaveAs;
+    procedure ActionUpdateControls;
     procedure ActionChangeFile(const id: Integer);
   public
     { Public declarations }
@@ -209,6 +217,64 @@ begin
   ListBox1.Items.Clear;
 end;
 
+procedure TForm1.ActionSaveAs;
+const
+  MAX_CHECK = 10;
+var
+  uname, line: string;
+  i, j: Integer;
+  lst: TStringList;
+begin
+  if SynEdit1.Lines.Count = 0 then
+    Exit;
+
+  uname := '';
+
+  for i := 0 to MAX_CHECK - 1 do
+  begin
+    if i = SynEdit1.Lines.Count then
+      Break;
+
+    line := AnsiString(SynEdit1.Lines.Strings[i]);
+    if Pos('UNIT ', UpperCase(line)) = 1 then
+    begin
+      for j := 5 to Length(line) do
+      begin
+        if (line[j] in ABC_CHARS) or (line[j] in NUM_CHARS) or (line[j] = '_') then
+          uname := uname + line[j]
+        else if (line[j] = ' ') and (uname = '') then
+        else
+          Break;
+      end;
+      if uname <> '' then
+        if uname[1] in NUM_CHARS then
+          uname := '_' + uname;
+    end;
+  end;
+
+  if uname <> '' then
+    uname := uname + '.pas';
+
+  SaveDialog1.FileName := uname;
+
+  if SaveDialog1.Execute then
+  begin
+    lst := TStringList.Create;
+    try
+      lst.Text := AnsiString(SynEdit1.Text);
+      lst.SaveToFile(SaveDialog1.FileName);
+    finally
+      lst.Free;
+    end;
+  end;
+end;
+
+procedure TForm1.ActionUpdateControls;
+begin
+  SaveAs1.Enabled := SynEdit1.Lines.Count > 0;
+  SaveAsButton1.Enabled := SynEdit1.Lines.Count > 0;
+end;
+
 procedure TForm1.ActionChangeFile(const id: Integer);
 const
   MAXLINES = 100000;
@@ -298,6 +364,26 @@ end;
 procedure TForm1.ClearButton1Click(Sender: TObject);
 begin
   ActionClear;
+end;
+
+procedure TForm1.SaveAsButton1Click(Sender: TObject);
+begin
+  ActionSaveAs;
+end;
+
+procedure TForm1.SaveAs1Click(Sender: TObject);
+begin
+  ActionSaveAs;
+end;
+
+procedure TForm1.File1Click(Sender: TObject);
+begin
+  ActionUpdateControls;
+end;
+
+procedure TForm1.Timer1Timer(Sender: TObject);
+begin
+  ActionUpdateControls;
 end;
 
 end.
