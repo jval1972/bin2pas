@@ -281,6 +281,13 @@ begin
 
   outname := IncludeTrailingPathDelimiter(ExtractFilePath(finp)) + unitname + '.pas';
 
+  // Prevent same file for input & output
+  if UpperCase(outname) = UpperCase(finp) then
+  begin
+    unitname := unitname + '_unit';
+    outname := IncludeTrailingPathDelimiter(ExtractFilePath(finp)) + unitname + '.pas';
+  end;
+
   fs := TFileStream.Create(finp, fmOpenRead);
   try
     GetMem(buf, fs.Size);
