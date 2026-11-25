@@ -288,6 +288,7 @@ begin
               lst.Strings[lunit] := Format('unit %s;', [b2p_pascalname(uname)]);
           end;
 
+      backupfile(SaveDialog1.FileName);
       lst.SaveToFile(SaveDialog1.FileName);
     finally
       lst.Free;

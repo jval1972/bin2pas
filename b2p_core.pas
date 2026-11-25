@@ -309,6 +309,7 @@ begin
     sl := TStringList.Create;
     try
       sl.Text := b2p_data_to_unit(buf, fs.Size, varname, unitname, flags);
+      backupfile(outname);
       sl.SaveToFile(outname);
     finally
       sl.Free;

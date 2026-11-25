@@ -11,6 +11,10 @@ type
 
 procedure memcpy(const dest0: pointer; const src0: pointer; count0: integer);
 
+function CopyFile(const sname, dname: string): boolean;
+
+procedure backupfile(const fn: string);
+
 procedure CompressStream(Source, Dest: TStream; Level: TCompressionLevel = clDefault);
 
 procedure DecompressStream(Source, Dest: TStream);
@@ -39,6 +43,59 @@ implementation
 procedure memcpy(const dest0: pointer; const src0: pointer; count0: integer);
 begin
   Move(src0^, dest0^, count0);
+end;
+
+function CopyFile(const sname, dname: string): boolean;
+var
+  FromF, ToF: file;
+  NumRead, NumWritten: Integer;
+  Buf: array[1..8192] of Char;
+  adir: string;
+begin
+  Result := False;
+
+  if (Trim(sname) = '') or (Trim(dname) = '') then
+    Exit;
+
+  if FileExists(sname) then
+  begin
+    {$I-}
+    AssignFile(FromF, sname);
+    Reset(FromF, 1);
+    adir := Trim(ExtractFilePath(dname));
+    if adir <> '' then
+      if not DirectoryExists(adir) then
+        ForceDirectories(adir);
+    AssignFile(ToF, dname);
+    Rewrite(ToF, 1);
+    repeat
+      BlockRead(FromF, Buf, SizeOf(Buf), NumRead);
+      BlockWrite(ToF, Buf, NumRead, NumWritten);
+    until (NumRead = 0) or (NumWritten <> NumRead);
+    CloseFile(FromF);
+    CloseFile(ToF);
+    {$I+}
+    Result := IOResult = 0;
+  end;
+end;
+
+procedure backupfile(const fn: string);
+var
+  fbck: string;
+  fname: string;
+begin
+  fname := Trim(fn);
+
+  if fname = '' then
+    Exit;
+
+  if not FileExists(fname) then
+    Exit;
+
+  fbck := fname + '_' + FormatDateTime('yyyymmdd', Now);
+  if FileExists(fbck) then
+    fbck := fbck + '_latest';
+  CopyFile(fname, fbck);
 end;
 
 procedure CompressStream(Source, Dest: TStream; Level: TCompressionLevel = clDefault);
