@@ -7,15 +7,7 @@ uses
   Dialogs, ExtCtrls, Menus, StdCtrls, SynEdit, SynHighlighterPas, Buttons;
 
 type
-  TPascalSynEdit = class(TSynEdit)
-  private
-    funitname: string;
-    function GetSaveFileName(const fn: string): string;
-    procedure SetUnitName(const fn: string);
-  public
-    property unitname: string read funitname write funitname;
-    procedure DoSave;
-  end;
+  TPascalSynEdit = class(TSynEdit);
 
 type
   TForm1 = class(TForm)
@@ -97,50 +89,6 @@ uses
 
 const
   rsTitle = 'Binary to Pascal';
-    
-function TPascalSynEdit.GetSaveFileName(const fn: string): string;
-begin
-  Result := fn + '.pas';
-end;
-
-procedure TPascalSynEdit.SetUnitName(const fn: string);
-var
-  lst: TStringList;
-begin
-  if funitname <> fn then
-  begin
-    if not ReadOnly then
-    begin
-      if funitname <> '' then
-      begin
-        lst := TStringList.Create;
-        lst.Text := Text;
-        lst.SaveToFile(GetSaveFileName(funitname));
-        lst.Free;
-      end;
-    end;
-    lst := TStringList.Create;
-    if FileExists(GetSaveFileName(fn)) then
-      lst.LoadFromFile(GetSaveFileName(fn));
-    Text := lst.Text;
-    lst.Free;
-    funitname := fn;
-  end;
-end;
-
-procedure TPascalSynEdit.DoSave;
-var
-  lst: TStringList;
-begin
-  if not ReadOnly then
-    if funitname <> '' then
-    begin
-      lst := TStringList.Create;
-      lst.Text := Text;
-      lst.SaveToFile(GetSaveFileName(funitname));
-      lst.Free;
-    end;
-end;
 
 //==============================================================================
 
@@ -154,7 +102,6 @@ begin
   SynEdit1.Gutter.AutoSize := True;
   SynEdit1.MaxScrollWidth := 255;
   SynEdit1.WantTabs := True;
-  SynEdit1.unitname := '';
 
   SynPasSyn1 := TSynPasSyn.Create(Self);
 
