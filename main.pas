@@ -63,6 +63,7 @@ type
     procedure ActionOpen;
     procedure ActionClose;
     procedure ActionClear;
+    procedure ActionChangeFile(const id: Integer);
   public
     { Public declarations }
   end;
@@ -186,7 +187,7 @@ begin
       Screen.Cursor := crDefault;
     end;
 
-    DoChangeFile(0);
+    ActionChangeFile(0);
   end;
 end;
 
@@ -256,7 +257,7 @@ end;
 
 procedure TForm1.ListBox1Click(Sender: TObject);
 begin
-    DoChangeFile(ListBox1.ItemIndex);
+  ActionChangeFile(ListBox1.ItemIndex);
 end;
 
 procedure TForm1.Exit1Click(Sender: TObject);
