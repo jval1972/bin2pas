@@ -39,7 +39,7 @@ const
      _type: tGroup),
 
     (name: 'optUseCompression';
-     helptext: 'Compress data before converting';
+     helptext: 'Compress data before converting (True/False)';
      location: @optUseCompression;
      setable: True;
      defaultsvalue: '';
@@ -50,7 +50,7 @@ const
      _type: tBoolean),
 
     (name: 'optUsePackedArrays';
-     helptext: 'Use packed array for data';
+     helptext: 'Use packed array for data (True/False)';
      location: @optUsePackedArrays;
      setable: True;
      defaultsvalue: '';
@@ -89,6 +89,7 @@ var
   i: integer;
   pd: Pdefault_t;
   p: integer;
+  sparm: string;
 begin
   pd := @defaults[0];
   for i := 0 to NUMDEFAULTS - 1 do
@@ -111,7 +112,15 @@ begin
             end;
           end
           else if pd._type = tBoolean then
-             PBoolean(pd.location)^ := StrToIntDef(ParamStr(p + 1), pd.defaultivalue) <> 0
+          begin
+            sparm := UpperCase(ParamStr(p + 1));
+            if sparm = 'TRUE' then
+              PBoolean(pd.location)^ := True
+            else if sparm = 'FALSE' then
+              PBoolean(pd.location)^ := False
+            else
+              PBoolean(pd.location)^ := StrToIntDef(ParamStr(p + 1), pd.defaultivalue) <> 0;
+          end
           else if pd._type = tString255 then
              PString255(pd.location)^ := ParamStr(p + 1);
         end;
