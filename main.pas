@@ -43,6 +43,7 @@ type
     SaveAsButton1: TSpeedButton;
     AboutButton1: TSpeedButton;
     ExitButton1: TSpeedButton;
+    CompressionCheckBox1: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure Open1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -164,6 +165,7 @@ end;
 procedure TForm1.ActionOpen;
 var
   i: Integer;
+  flags: LongWord;
 begin
   if OpenDialog1.Execute then
   begin
@@ -176,7 +178,10 @@ begin
 
       for i := 0 to OpenDialog1.Files.Count - 1 do
       begin
-        b2p_create_unit(OpenDialog1.Files.Strings[i], '', B2PF_ZIP);
+        flags := 0;
+        if CompressionCheckBox1.Checked then
+          flags := flags or B2PF_ZIP;
+        b2p_create_unit(OpenDialog1.Files.Strings[i], '', flags);
         Files.Add(OpenDialog1.Files.Strings[i]);
       end;
 

@@ -1600,6 +1600,14 @@ object Form1: TForm1
       Layout = blGlyphTop
       OnClick = ExitButton1Click
     end
+    object CompressionCheckBox1: TCheckBox
+      Left = 344
+      Top = 8
+      Width = 97
+      Height = 17
+      Caption = 'Compression'
+      TabOrder = 0
+    end
   end
   object BackPanel: TPanel
     Left = 0
