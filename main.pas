@@ -42,10 +42,13 @@ type
     SaveAsButton1: TSpeedButton;
     AboutButton1: TSpeedButton;
     ExitButton1: TSpeedButton;
-    CompressionCheckBox1: TCheckBox;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     Timer1: TTimer;
+    Panel3: TPanel;
+    GroupBox1: TGroupBox;
+    CompressionCheckBox: TCheckBox;
+    PackedCheckBox: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure Open1Click(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -61,7 +64,7 @@ type
     procedure SaveAs1Click(Sender: TObject);
     procedure File1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
-    procedure CompressionCheckBox1Click(Sender: TObject);
+    procedure CompressionCheckBoxClick(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -219,13 +222,15 @@ const
   MAX_CHECK = 10;
 var
   uname, line: string;
-  i, j: Integer;
+  i, j, p: Integer;
   lst: TStringList;
+  lunit: Integer;
 begin
   if SynEdit1.Lines.Count = 0 then
     Exit;
 
   uname := '';
+  lunit := -1;
 
   for i := 0 to MAX_CHECK - 1 do
   begin
@@ -246,6 +251,9 @@ begin
       if uname <> '' then
         if uname[1] in NUM_CHARS then
           uname := '_' + uname;
+
+      lunit := i;
+      Break;
     end;
   end;
 
@@ -259,6 +267,19 @@ begin
     lst := TStringList.Create;
     try
       lst.Text := AnsiString(SynEdit1.Text);
+
+      if (lunit >= 0) and (lunit < lst.Count) then
+        if UpperCase(ExtractFileName(SaveDialog1.FileName)) <> UpperCase(uname) then
+          if Pos('UNIT ', UpperCase(lst.Strings[lunit])) = 1 then
+          begin
+            uname := ExtractFileName(SaveDialog1.FileName);
+            p := Pos('.', uname);
+            if p > 0 then
+              SetLength(uname, p - 1);
+            if uname <> '' then
+              lst.Strings[lunit] := Format('unit %s;', [b2p_pascalname(uname)]);
+          end;
+
       lst.SaveToFile(SaveDialog1.FileName);
     finally
       lst.Free;
@@ -278,8 +299,10 @@ var
   flags: LongWord;
 begin
   flags := 0;
-  if CompressionCheckBox1.Checked then
+  if CompressionCheckBox.Checked then
     flags := flags or B2PF_ZIP;
+  if PackedCheckBox.Checked then
+    flags := flags or B2PF_PACKED;
 
   for i := 0 to Files.Count - 1 do
     b2p_create_unit(Files.Strings[i], '', flags);
@@ -399,7 +422,7 @@ begin
   ActionUpdateControls;
 end;
 
-procedure TForm1.CompressionCheckBox1Click(Sender: TObject);
+procedure TForm1.CompressionCheckBoxClick(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try

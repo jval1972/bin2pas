@@ -1044,6 +1044,8 @@ object Form1: TForm1
     00000000000000000000000000000000000000000000000000000000}
   Menu = MainMenu1
   OldCreateOrder = False
+  Position = poScreenCenter
+  WindowState = wsMaximized
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -1602,16 +1604,42 @@ object Form1: TForm1
       Layout = blGlyphTop
       OnClick = ExitButton1Click
     end
-    object CompressionCheckBox1: TCheckBox
-      Left = 344
-      Top = 8
-      Width = 121
-      Height = 17
-      Caption = 'Compress file data'
-      Checked = True
-      State = cbChecked
+    object Panel3: TPanel
+      Left = 840
+      Top = 1
+      Width = 187
+      Height = 70
+      Align = alRight
+      BevelOuter = bvNone
+      Caption = ' '
       TabOrder = 0
-      OnClick = CompressionCheckBox1Click
+      object GroupBox1: TGroupBox
+        Left = 24
+        Top = 8
+        Width = 145
+        Height = 57
+        Caption = ' Options '
+        TabOrder = 0
+        object CompressionCheckBox: TCheckBox
+          Left = 8
+          Top = 16
+          Width = 121
+          Height = 17
+          Caption = 'Compress file data'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          OnClick = CompressionCheckBoxClick
+        end
+        object PackedCheckBox: TCheckBox
+          Left = 8
+          Top = 32
+          Width = 121
+          Height = 17
+          Caption = 'Use packed array'
+          TabOrder = 1
+        end
+      end
     end
   end
   object BackPanel: TPanel

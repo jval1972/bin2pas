@@ -7,10 +7,11 @@ uses
 
 const
   B2PF_ZIP = 1;
+  B2PF_PACKED = 2;
 
 function b2p_pascalname(const s: string): string;
 
-function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name1: string): string;
+function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name1: string; const flags: LongWord): string;
 
 function b2p_data_to_unit(const buf: PByteArray; const sz: Integer; const varname1, unitname1: string; const flags: LongWord): string;
 
@@ -56,12 +57,13 @@ begin
   Result := '$' + IntToHex(b, 2);
 end;
 
-function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name1: string): string;
+function b2p_data_to_decl(const buf: PByteArray; const sz: Integer; const name1: string; const flags: LongWord): string;
 var
   i: Integer;
   size, realsize: Integer;
   name: string;
   ret: string;
+  pa: string;
 
   procedure _add(const s: string);
   var
@@ -91,6 +93,11 @@ begin
 
   name := b2p_pascalname(name1);
 
+  if flags and B2PF_PACKED <> 0 then
+    pa := 'packed '
+  else
+    pa := '';
+
   Result := 'const'#13#10;
 
   if sz = 1 then
@@ -99,8 +106,8 @@ begin
                 Format('  %s_SIZE = 1;'#13#10,
                   [UpperCase(name)]);
     Result := Result +
-                Format('  %s: array[0..0] of Byte = ( %s );'#13#10,
-                  [UpperCase(name), b2p_byte2hex(buf[0])]);
+                Format('  %s: %sarray[0..0] of Byte = ( %s );'#13#10,
+                  [UpperCase(name), pa, b2p_byte2hex(buf[0])]);
     Exit;
   end;
 
@@ -109,8 +116,8 @@ begin
     Result := Result +
                 Format('  %s_SIZE = 2;'#13#10, [UpperCase(name)]);
     Result := Result +
-                Format('  %s: array[0..1] of Byte = ( %s, %s );'#13#10,
-                  [UpperCase(name), b2p_byte2hex(buf[0]), b2p_byte2hex(buf[1])]);
+                Format('  %s: %sarray[0..1] of Byte = ( %s, %s );'#13#10,
+                  [UpperCase(name), pa, b2p_byte2hex(buf[0]), b2p_byte2hex(buf[1])]);
     Exit;
   end;
 
@@ -119,8 +126,8 @@ begin
     Result := Result +
                 Format('  %s_SIZE = 3;'#13#10, [UpperCase(name)]);
     Result := Result +
-                Format('  %s: array[0..2] of Byte = ( %s, %s, %s );'#13#10,
-                  [UpperCase(name), b2p_byte2hex(buf[0]), b2p_byte2hex(buf[1]), b2p_byte2hex(buf[2])]);
+                Format('  %s: %sarray[0..2] of Byte = ( %s, %s, %s );'#13#10,
+                  [UpperCase(name), pa, b2p_byte2hex(buf[0]), b2p_byte2hex(buf[1]), b2p_byte2hex(buf[2])]);
     Exit;
   end;
 
@@ -128,8 +135,8 @@ begin
               Format('  %s_SIZE = %d;'#13#10,
                 [UpperCase(name), sz]);
   Result := Result +
-              Format('  %s: array[0..%s_SIZE - 1] of Byte = ('#13#10'    ',
-                [UpperCase(name), UpperCase(name)]);
+              Format('  %s: %sarray[0..%s_SIZE - 1] of Byte = ('#13#10'    ',
+                [UpperCase(name), pa, UpperCase(name)]);
 
   ret := '          ';
   realsize := Length(ret);
@@ -166,6 +173,7 @@ var
   cs: TMemoryStream;
   zsize: Integer;
   sret: string;
+  pa: string;
 begin
   varname := b2p_pascalname(varname1);
   unitname := b2p_pascalname(unitname1);
@@ -177,6 +185,11 @@ begin
   Result := Result + 'interface'#13#10#13#10;
 
   zsize := 0;
+
+  if flags and B2PF_PACKED <> 0 then
+    pa := 'packed '
+  else
+    pa := '';
 
   if flags and B2PF_ZIP <> 0 then
   begin
@@ -191,8 +204,8 @@ begin
                   [UpperCase(varname), sz]);
     Result := Result + 'var'#13#10;
     Result := Result +
-                Format('  %s: array[0..%s_SIZE - 1] of Byte;'#13#10#13#10,
-                  [UpperCase(varname), UpperCase(varname)]);
+                Format('  %s: %sarray[0..%s_SIZE - 1] of Byte;'#13#10#13#10,
+                  [UpperCase(varname), pa, UpperCase(varname)]);
 
     zvarname := varname;
     if zvarname[1] = '_' then
@@ -200,12 +213,12 @@ begin
     else
       zvarname := 'Z_' + zvarname;
     zsize := cs.Size;
-    Result := Result + b2p_data_to_decl(cs.Memory, zsize, zvarname);
+    Result := Result + b2p_data_to_decl(cs.Memory, zsize, zvarname, flags);
     cs.Free;
     bs.Free;
   end
   else
-    Result := Result + b2p_data_to_decl(buf, sz, varname);
+    Result := Result + b2p_data_to_decl(buf, sz, varname, flags);
 
   Result := Result + 'implementation'#13#10#13#10;
 
@@ -216,7 +229,7 @@ begin
     sret := sret + '  BUFFERSIZE = 8192;'#13#10#13#10;
     sret := sret + 'var'#13#10'  Source, Dest: TMemoryStream;'#13#10;
     sret := sret + '  Decompressor: TDecompressionStream;'#13#10;
-    sret := sret + '  Buffer: array[0..BUFFERSIZE - 1] of Byte;'#13#10;
+    sret := sret + Format('  Buffer: %sarray[0..BUFFERSIZE - 1] of Byte;'#13#10, [pa]);
     sret := sret + '  BytesRead: Integer;'#13#10#13#10;
     sret := sret + 'initialization'#13#10#13#10;
     sret := sret + '  Source := TMemoryStream.Create;'#13#10;
