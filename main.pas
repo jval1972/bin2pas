@@ -310,7 +310,7 @@ begin
       while lst.Count > MAXLINES do
         lst.Delete(lst.Count - 1);
       lst.Add('');
-      lst.Add(Format('// File trunccated - Showning %d of %d lines', [MAXLINES, cnt]));
+      lst.Add(Format('// File truncated - Showning %d of %d lines', [MAXLINES, cnt]));
     end;
 
     SynEdit1.Text := lst.Text;
