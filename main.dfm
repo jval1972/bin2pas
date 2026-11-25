@@ -1163,6 +1163,7 @@ object Form1: TForm1
         FCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFC
         FCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFCFC}
       Layout = blGlyphTop
+      OnClick = ClearButton1Click
     end
     object OpenButton1: TSpeedButton
       Left = 72
@@ -1680,6 +1681,7 @@ object Form1: TForm1
       Caption = 'File'
       object Clear1: TMenuItem
         Caption = 'Clear'
+        OnClick = Clear1Click
       end
       object N1: TMenuItem
         Caption = '-'

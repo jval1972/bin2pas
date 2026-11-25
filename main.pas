@@ -52,6 +52,8 @@ type
     procedure OpenButton1Click(Sender: TObject);
     procedure AboutButton1Click(Sender: TObject);
     procedure ExitButton1Click(Sender: TObject);
+    procedure Clear1Click(Sender: TObject);
+    procedure ClearButton1Click(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -60,7 +62,7 @@ type
     procedure ActionAbout;
     procedure ActionOpen;
     procedure ActionClose;
-    procedure DoChangeFile(const id: Integer);
+    procedure ActionClear;
   public
     { Public declarations }
   end;
@@ -193,7 +195,15 @@ begin
   Close;
 end;
 
-procedure TForm1.DoChangeFile(const id: Integer);
+procedure TForm1.ActionClear;
+begin
+  SynEdit1.Clear;
+  Files.Clear;
+  ListBox1.ItemIndex := -1;
+  ListBox1.Items.Clear;
+end;
+
+procedure TForm1.ActionChangeFile(const id: Integer);
 const
   MAXLINES = 100000;
 var
@@ -272,6 +282,16 @@ end;
 procedure TForm1.ExitButton1Click(Sender: TObject);
 begin
   ActionClose;
+end;
+
+procedure TForm1.Clear1Click(Sender: TObject);
+begin
+  ActionClear;
+end;
+
+procedure TForm1.ClearButton1Click(Sender: TObject);
+begin
+  ActionClear;
 end;
 
 end.
