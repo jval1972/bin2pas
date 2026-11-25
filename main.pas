@@ -65,6 +65,7 @@ type
     procedure File1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure CompressionCheckBoxClick(Sender: TObject);
+    procedure PackedCheckBoxClick(Sender: TObject);
   private
     { Private declarations }
     SynPasSyn1: TSynPasSyn;
@@ -78,6 +79,8 @@ type
     procedure ActionUpdateControls;
     procedure ActionBuildFiles;
     procedure ActionChangeFile(const id: Integer);
+    procedure DefaultsToControls;
+    procedure ControlsToDefaults;
   public
     { Public declarations }
   end;
@@ -90,7 +93,7 @@ implementation
 {$R *.dfm}
 
 uses
-  b2p_core, b2p_utils, frm_message;
+  b2p_core, b2p_utils, b2p_options, frm_message;
 
 const
   rsTitle = 'Binary to Pascal';
@@ -159,10 +162,15 @@ begin
   SynEdit1.ReadOnly := True;
 
   Files := TStringList.Create;
+
+  LoadDefaults(ChangeFileExt(ParamStr(0), '.ini'));
+  DefaultsToControls;
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
+  ControlsToDefaults;
+  SaveDefaults(ChangeFileExt(ParamStr(0), '.ini'));
   Files.Free;
 end;
 
@@ -357,6 +365,18 @@ begin
   Screen.Cursor := crDefault;
 end;
 
+procedure TForm1.DefaultsToControls;
+begin
+  CompressionCheckBox.Checked := optUseCompression;
+  PackedCheckBox.Checked := optUsePackedArrays;
+end;
+
+procedure TForm1.ControlsToDefaults;
+begin
+  optUseCompression := CompressionCheckBox.Checked;
+  optUsePackedArrays := PackedCheckBox.Checked;
+end;
+
 procedure TForm1.Open1Click(Sender: TObject);
 begin
   ActionOpen;
@@ -424,6 +444,22 @@ end;
 
 procedure TForm1.CompressionCheckBoxClick(Sender: TObject);
 begin
+  ControlsToDefaults;
+
+  Screen.Cursor := crHourGlass;
+  try
+    ActionBuildFiles;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+
+  ActionChangeFile(ListBox1.ItemIndex);
+end;
+
+procedure TForm1.PackedCheckBoxClick(Sender: TObject);
+begin
+  ControlsToDefaults;
+
   Screen.Cursor := crHourGlass;
   try
     ActionBuildFiles;

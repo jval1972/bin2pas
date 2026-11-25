@@ -33,7 +33,8 @@ uses
   SynTextDrawer in 'SynEdit\SynTextDrawer.pas',
   SynUnicode in 'SynEdit\SynUnicode.pas',
   frm_message in 'frm_message.pas' {frmMessage},
-  b2p_utils in 'b2p_utils.pas';
+  b2p_utils in 'b2p_utils.pas',
+  b2p_options in 'b2p_options.pas';
 
 {$R *.res}
 

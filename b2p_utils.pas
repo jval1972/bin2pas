@@ -5,6 +5,10 @@ interface
 uses
   Windows, SysUtils, Classes, zlib;
 
+type
+  String255 = string[255];
+  PString255 = ^String255;
+
 procedure memcpy(const dest0: pointer; const src0: pointer; count0: integer);
 
 procedure CompressStream(Source, Dest: TStream; Level: TCompressionLevel = clDefault);
