@@ -172,7 +172,8 @@ begin
   if varname = unitname then
     varname := '_' + varname;
 
-  Result := 'unit ' + unitname + ';'#13#10#13#10;
+  Result := '// Created with bin2pas v.' + I_VersionBuilt + #13#10#13#10;
+  Result := Result + 'unit ' + unitname + ';'#13#10#13#10;
   Result := Result + 'interface'#13#10#13#10;
 
   zsize := 0;
