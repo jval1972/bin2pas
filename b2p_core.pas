@@ -209,8 +209,6 @@ begin
   Result := Result + 'unit ' + unitname + ';'#13#10#13#10;
   Result := Result + 'interface'#13#10#13#10;
 
-  zsize := 0;
-
   if flags and B2PF_PACKED <> 0 then
     pa := 'packed '
   else
