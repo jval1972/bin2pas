@@ -1636,7 +1636,7 @@ object Form1: TForm1
           Top = 32
           Width = 121
           Height = 17
-          Caption = 'Use packed array'
+          Caption = 'Use packed arrays'
           TabOrder = 1
         end
       end
